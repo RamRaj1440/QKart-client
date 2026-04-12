@@ -18,6 +18,7 @@ const statusColors = {
   shipped: "info",
   delivered: "success",
   cancelled: "error",
+  returned: "default",
 };
 
 const statusSteps = ["placed", "processing", "shipped", "delivered"];
@@ -27,6 +28,14 @@ const Orders = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState("");
+
+
+  // ── Return Dialog ──────────────────────────────────
+  const [returnDialog, setReturnDialog] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [returnReason, setReturnReason] = useState("");
+  const [actionMessage, setActionMessage] = useState(null);
 
   useEffect(() => {
     if (!user) {
@@ -73,6 +82,63 @@ const Orders = () => {
       socket.off("order_status_update");
     };
   }, []);
+
+  // ── Cancel Order ───────────────────────────────────
+  const handleCancel = async (orderId) => {
+    if (!window.confirm("Are you sure you want to cancel this order?")) return;
+
+    setActionLoading(orderId);
+    try {
+      const { data } = await api.put(`/orders/${orderId}/cancel`);
+      setOrders((prev) =>
+        prev.map((o) => o._id === orderId ? { ...o, status: "cancelled" } : o)
+      );
+      setActionMessage({
+        type: "success",
+        text: `Order cancelled. ₹${data.refundAmount.toLocaleString()} refunded to wallet.`,
+      });
+    } catch (err) {
+      setActionMessage({
+        type: "error",
+        text: err.response?.data?.message || "Failed to cancel order",
+      });
+    } finally {
+      setActionLoading("");
+    }
+  };
+
+  // ── Return Order ───────────────────────────────────
+  const handleReturn = async () => {
+    if (!selectedOrder) return;
+
+    setActionLoading(selectedOrder._id);
+    try {
+      const { data } = await api.put(`/orders/${selectedOrder._id}/return`, {
+        reason: returnReason,
+      });
+      setOrders((prev) =>
+        prev.map((o) =>
+          o._id === selectedOrder._id ? { ...o, status: "returned" } : o
+        )
+      );
+
+       setActionMessage({
+        type: "success",
+        text: `Return submitted. ₹${data.refundAmount.toLocaleString()} refunded to wallet.`,
+      });
+    } catch (err) {
+      setActionMessage({
+        type: "error",
+        text: err.response?.data?.message || "Failed to submit return",
+      });
+    } finally {
+      setActionLoading("");
+      setReturnDialog(false);
+      setReturnReason("");
+      setSelectedOrder(null);
+    }
+  };
+
 
   if (loading) {
     return (
