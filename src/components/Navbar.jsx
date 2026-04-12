@@ -177,6 +177,16 @@ const Navbar = () => {
                 >
                   Logout
                 </Button>
+
+                {user?.isAdmin && (
+  <Button
+    component={RouterLink} to="/admin"
+    variant="contained" color="primary"
+    sx={{ borderRadius: 2 }}
+  >
+    Admin
+  </Button>
+)}
               </>
             ) : (
               <>
@@ -234,6 +244,17 @@ const Navbar = () => {
           <ListItemText primary="My Orders" />
         </ListItemButton>
       </ListItem>
+
+      {user?.isAdmin && (
+  <ListItem disablePadding>
+    <ListItemButton
+      component={RouterLink} to="/admin"
+      onClick={() => setDrawerOpen(false)}
+    >
+      <ListItemText primary="Admin Dashboard" />
+    </ListItemButton>
+  </ListItem>
+)}
 
       {/* Mobile Drawer */}
       <Drawer
