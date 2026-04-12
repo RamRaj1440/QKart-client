@@ -75,7 +75,7 @@ const Checkout = () => {
       // Step 2: Open Razorpay checkout
       console.log("Razorpay Key:", import.meta.env.VITE_RAZORPAY_KEY_ID);
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_ScCwt47u38bsVp",
         
         amount: data.amount,
         currency: data.currency,
