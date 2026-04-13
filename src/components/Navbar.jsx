@@ -1,19 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  Box,
-  IconButton,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Divider,
-  Badge,
+  AppBar, Toolbar, Typography, Button, Box,
+  IconButton, Drawer, List, ListItem,
+  ListItemButton, ListItemText, Divider, Badge,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
@@ -35,16 +25,13 @@ const Navbar = () => {
     navigate("/login");
   };
 
-  const handleCartClick = () => {
-    setDrawerOpen(false);
-    navigate("/cart");
-  };
-
   // ── Mobile Drawer ──────────────────────────────────
   const drawer = (
     <Box sx={{ width: 250 }}>
-      {/* Brand */}
-      <Typography variant="h6" fontWeight={800} color="primary" sx={{ p: 2 }}>
+      <Typography
+        variant="h6" fontWeight={800} color="primary"
+        sx={{ p: 2 }}
+      >
         QKart
       </Typography>
       <Divider />
@@ -64,9 +51,9 @@ const Navbar = () => {
 
             <Divider />
 
-            {/* Cart in Drawer */}
+            {/* Cart */}
             <ListItem disablePadding>
-              <ListItemButton onClick={handleCartClick}>
+              <ListItemButton onClick={() => { setDrawerOpen(false); navigate("/cart"); }}>
                 <Badge badgeContent={cartCount} color="error" sx={{ mr: 2 }}>
                   <ShoppingCartOutlinedIcon color="primary" />
                 </Badge>
@@ -74,24 +61,44 @@ const Navbar = () => {
               </ListItemButton>
             </ListItem>
 
-            <Divider />
+            {/* Profile */}
+            <ListItem disablePadding>
+              <ListItemButton
+                component={RouterLink} to="/profile"
+                onClick={() => setDrawerOpen(false)}
+              >
+                <ListItemText primary="My Profile" />
+              </ListItemButton>
+            </ListItem>
 
-            <Button
-              component={RouterLink}
-              to="/orders"
-              color="primary"
-              sx={{ borderRadius: 2 }}
-            >
-              Orders
-            </Button>
+            {/* Orders */}
+            <ListItem disablePadding>
+              <ListItemButton
+                component={RouterLink} to="/orders"
+                onClick={() => setDrawerOpen(false)}
+              >
+                <ListItemText primary="My Orders" />
+              </ListItemButton>
+            </ListItem>
+
+            {/* Admin */}
+            {user?.isAdmin && (
+              <ListItem disablePadding>
+                <ListItemButton
+                  component={RouterLink} to="/admin"
+                  onClick={() => setDrawerOpen(false)}
+                >
+                  <ListItemText primary="Admin Dashboard" />
+                </ListItemButton>
+              </ListItem>
+            )}
+
+            <Divider />
 
             {/* Logout */}
             <ListItem disablePadding>
               <ListItemButton
-                onClick={() => {
-                  setDrawerOpen(false);
-                  handleLogout();
-                }}
+                onClick={() => { setDrawerOpen(false); handleLogout(); }}
               >
                 <ListItemText
                   primary="Logout"
@@ -102,22 +109,18 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            {/* Login */}
             <ListItem disablePadding>
               <ListItemButton
-                component={RouterLink}
-                to="/login"
+                component={RouterLink} to="/login"
                 onClick={() => setDrawerOpen(false)}
               >
                 <ListItemText primary="Login" />
               </ListItemButton>
             </ListItem>
 
-            {/* Register */}
             <ListItem disablePadding>
               <ListItemButton
-                component={RouterLink}
-                to="/register"
+                component={RouterLink} to="/register"
                 onClick={() => setDrawerOpen(false)}
               >
                 <ListItemText primary="Register" />
@@ -133,26 +136,19 @@ const Navbar = () => {
     <>
       <AppBar position="sticky" elevation={1} sx={{ bgcolor: "white" }}>
         <Toolbar sx={{ justifyContent: "space-between" }}>
+
           {/* Logo */}
           <Typography
-            variant="h5"
-            fontWeight={800}
-            color="primary"
-            component={RouterLink}
-            to="/"
+            variant="h5" fontWeight={800} color="primary"
+            component={RouterLink} to="/"
             sx={{ textDecoration: "none" }}
           >
             QKart
           </Typography>
 
           {/* Desktop Nav */}
-          <Box
-            sx={{
-              display: { xs: "none", sm: "flex" },
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
+          <Box sx={{ display: { xs: "none", sm: "flex" }, alignItems: "center", gap: 1 }}>
+
             {/* Cart Icon */}
             <IconButton color="primary" onClick={() => navigate("/cart")}>
               <Badge badgeContent={cartCount} color="error">
@@ -162,48 +158,56 @@ const Navbar = () => {
 
             {user ? (
               <>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ mr: 1 }}
-                >
+                <Typography variant="body2" color="text.secondary" sx={{ mr: 1 }}>
                   Hi, {user.username || user.email}
                 </Typography>
+
                 <Button
-                  variant="outlined"
+                  component={RouterLink} to="/profile"
                   color="primary"
+                  sx={{ borderRadius: 2 }}
+                >
+                  Profile
+                </Button>
+
+                <Button
+                  component={RouterLink} to="/orders"
+                  color="primary"
+                  sx={{ borderRadius: 2 }}
+                >
+                  Orders
+                </Button>
+
+                {user?.isAdmin && (
+                  <Button
+                    component={RouterLink} to="/admin"
+                    variant="contained" color="primary"
+                    sx={{ borderRadius: 2 }}
+                  >
+                    Admin
+                  </Button>
+                )}
+
+                <Button
+                  variant="outlined" color="primary"
                   onClick={handleLogout}
                   sx={{ borderRadius: 2 }}
                 >
                   Logout
                 </Button>
-
-                {user?.isAdmin && (
-  <Button
-    component={RouterLink} to="/admin"
-    variant="contained" color="primary"
-    sx={{ borderRadius: 2 }}
-  >
-    Admin
-  </Button>
-)}
               </>
             ) : (
               <>
                 <Button
-                  component={RouterLink}
-                  to="/login"
-                  variant="outlined"
-                  color="primary"
+                  component={RouterLink} to="/login"
+                  variant="outlined" color="primary"
                   sx={{ borderRadius: 2 }}
                 >
                   Login
                 </Button>
                 <Button
-                  component={RouterLink}
-                  to="/register"
-                  variant="contained"
-                  color="primary"
+                  component={RouterLink} to="/register"
+                  variant="contained" color="primary"
                   sx={{ borderRadius: 2 }}
                 >
                   Register
@@ -212,49 +216,20 @@ const Navbar = () => {
             )}
           </Box>
 
-          {/* Mobile — Cart Icon + Hamburger */}
-          <Box
-            sx={{
-              display: { xs: "flex", sm: "none" },
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            {/* Cart visible on mobile too */}
+          {/* Mobile — Cart + Hamburger */}
+          <Box sx={{ display: { xs: "flex", sm: "none" }, alignItems: "center", gap: 1 }}>
             <IconButton color="primary" onClick={() => navigate("/cart")}>
               <Badge badgeContent={cartCount} color="error">
                 <ShoppingCartOutlinedIcon />
               </Badge>
             </IconButton>
-
-            {/* Hamburger */}
             <IconButton onClick={() => setDrawerOpen(true)} color="primary">
               <MenuIcon />
             </IconButton>
           </Box>
+
         </Toolbar>
       </AppBar>
-
-      <ListItem disablePadding>
-        <ListItemButton
-          component={RouterLink}
-          to="/orders"
-          onClick={() => setDrawerOpen(false)}
-        >
-          <ListItemText primary="My Orders" />
-        </ListItemButton>
-      </ListItem>
-
-      {user?.isAdmin && (
-  <ListItem disablePadding>
-    <ListItemButton
-      component={RouterLink} to="/admin"
-      onClick={() => setDrawerOpen(false)}
-    >
-      <ListItemText primary="Admin Dashboard" />
-    </ListItemButton>
-  </ListItem>
-)}
 
       {/* Mobile Drawer */}
       <Drawer
