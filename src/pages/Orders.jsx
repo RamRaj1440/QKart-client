@@ -296,6 +296,29 @@ const Orders = () => {
               {order.shippingAddress.state} - {order.shippingAddress.pincode}
             </Typography>
 
+            {/* Expected Delivery */}
+{!["cancelled", "returned"].includes(order.status) && (
+  <Typography variant="body2" color="primary" mt={0.5} fontWeight={600}>
+    🚚 Expected Delivery:{" "}
+    {order.expectedDelivery
+      ? new Date(order.expectedDelivery).toLocaleDateString("en-IN", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })
+      : new Date(
+          new Date(order.createdAt).setDate(
+            new Date(order.createdAt).getDate() + 5
+          )
+        ).toLocaleDateString("en-IN", {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+        })}
+  </Typography>
+)}
+
             {/* Payment Status */}
             <Typography variant="body2" color="text.secondary" mt={0.5}>
                Payment: {order.isPaid ? " Paid" : " Pending"}

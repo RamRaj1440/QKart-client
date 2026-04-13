@@ -67,6 +67,7 @@ const Login = () => {
         username: data.username,
         email: data.email,
         balance: data.balance,
+        isAdmin: data.isAdmin,
         token: data.token,
       });
 
