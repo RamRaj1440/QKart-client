@@ -67,11 +67,12 @@ const ProductCard = ({ product }) => {
           height="200"
           image={product.image}
           alt={product.name}
+          on Click={() => navigate(`/products/${product._id}`)}
           onError={(e) => {
             e.target.onerror = null;
             e.target.src = `https://placehold.co/300x200/e8f5e9/00a278?text=${encodeURIComponent(product.name)}`;
           }}
-          sx={{ objectFit: "contain", p: 2, bgcolor: "grey.50" }}
+          sx={{ objectFit: "contain", p: 2, bgcolor: "grey.50",cursor: "pointer"}}
         />
 
         <CardContent sx={{ flexGrow: 1 }}>
@@ -85,12 +86,15 @@ const ProductCard = ({ product }) => {
           {/* Name */}
           <Typography
             variant="subtitle1" fontWeight={700}
+            onClick={() => navigate(`/products/${product._id}`)}
             sx={{
               display: "-webkit-box",
               WebkitLineClamp: 2,
               WebkitBoxOrient: "vertical",
               overflow: "hidden",
               mb: 1,
+              cursor: "pointer",
+              "&:hover": { color: "primary.main" },
             }}
           >
             {product.name}
@@ -122,7 +126,7 @@ const ProductCard = ({ product }) => {
             disabled={loading}
             sx={{ borderRadius: 2, fontWeight: 700 }}
           >
-            {loading ? "Adding..." : "Add to Cart"}
+            {loading ? <CircularProgress size={24} /> : "Add to Cart"}
           </Button>
         </CardActions>
       </Card>

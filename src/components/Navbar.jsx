@@ -82,13 +82,15 @@ const Navbar = () => {
             </ListItem>
 
             {/* Admin */}
-            {user?.isAdmin && (
+            {user?.isAdmin === true && (
               <ListItem disablePadding>
                 <ListItemButton
                   component={RouterLink} to="/admin"
                   onClick={() => setDrawerOpen(false)}
                 >
-                  <ListItemText primary="Admin Dashboard" />
+                  <ListItemText primary="Admin Dashboard"
+                  primaryTypographyProps={{  color:"primary",fontWeight: 700 }} 
+                  />
                 </ListItemButton>
               </ListItem>
             )}
@@ -178,7 +180,7 @@ const Navbar = () => {
                   Orders
                 </Button>
 
-                {user?.isAdmin && (
+                {user?.isAdmin === true && (
                   <Button
                     component={RouterLink} to="/admin"
                     variant="contained" color="primary"
